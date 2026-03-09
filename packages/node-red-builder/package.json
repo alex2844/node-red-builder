@@ -41,6 +41,12 @@
 	"peerDependencies": {
 		"bun": ">=1.0.0"
 	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/alex2844/node-red-builder.git",
+		"directory": "packages/node-red-builder"
+	},
 	"keywords": [
 		"node-red",
 		"node-red-builder",
