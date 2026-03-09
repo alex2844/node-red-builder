@@ -1,0 +1,65 @@
+name: Release and Publish
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release:
+    name: Create Release and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Pack and Publish
+        run: |
+          root="${PWD}"
+          for dir in "${root}/packages/"*; do
+            if [ -d "${dir}" ] && [ -f "${dir}/package.json" ]; then
+              cd "${dir}"
+
+              NAME=$(jq -r .name package.json)
+              VERSION=$(jq -r .version package.json)
+              PRIVATE=$(jq -r '.private // false' package.json)
+              "${PRIVATE}" && continue
+
+              TGZ="${NAME}-${VERSION}.tgz"
+              echo "Packing ${NAME}@${VERSION}..."
+              bun pm pack
+              echo "Generated: ${TGZ}"
+
+              if ! bunx npm view "${NAME}@${VERSION}" version > /dev/null 2>&1; then
+                echo "Publishing ${NAME}@${VERSION} to npm..."
+                bunx npm publish "${TGZ}" --provenance --access public
+              else
+                echo "Version ${VERSION} of ${NAME} already exists on npm. Skipping publish."
+              fi
+            fi
+          done
+
+      - name: Generate Changelog
+        uses: alex2844/action-gh-changelog@v1
+        with:
+          output: 'RELEASE_NOTES.md'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          files: packages/node-red-builder/node-red-builder-*.tgz
+          draft: false
+          prerelease: false
