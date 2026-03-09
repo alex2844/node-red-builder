@@ -1,0 +1,19 @@
+{
+	"__NODE_NAME__": {
+		"label": {
+			"name": "Name",
+			"action": "Action",
+			"topic": "Topic"
+		},
+		"placeholder": {
+			"name": "My Node"
+		},
+		"action": {
+			"apply": "Apply Changes",
+			"restart": "Restart",
+			"add": "Add",
+			"del": "Delete",
+			"update": "Update"
+		}
+	}
+}
