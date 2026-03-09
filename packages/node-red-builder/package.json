@@ -1,0 +1,62 @@
+{
+	"name": "node-red-builder",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Core runtime and CLI for Node-RED Builder - develop Node-RED nodes with Hot Reload and IDE-friendly JSDoc types",
+	"sideEffects": false,
+	"types": "./types/runtime/index.d.ts",
+	"main": "./src/runtime/index.js",
+	"exports": {
+		".": {
+			"types": "./types/runtime/index.d.ts",
+			"default": "./src/runtime/index.js"
+		},
+		"./cli/*": {
+			"types": "./types/cli/commands/*.ts",
+			"default": "./src/cli/commands/*.js"
+		},
+		"./ui": {
+			"types": "./types/ui/index.d.ts",
+			"default": "./src/ui/index.js"
+		}
+	},
+	"bin": {
+		"node-red-builder": "./bin/cli.js",
+		"nrb": "./bin/cli.js"
+	},
+	"scripts": {
+		"test": "tsc -p ./tsconfig.json",
+		"build": "tsc -p ./tsconfig.build.json",
+		"prepack": "bun run build"
+	},
+	"files": [
+		"./bin/",
+		"./src/",
+		"./templates/",
+		"./types/"
+	],
+	"dependencies": {
+		"yargs": "^18.0.0"
+	},
+	"peerDependencies": {
+		"bun": ">=1.0.0"
+	},
+	"keywords": [
+		"node-red",
+		"node-red-builder",
+		"builder",
+		"cli",
+		"runtime",
+		"framework",
+		"jsdoc",
+		"jsdoc-types",
+		"type-safety",
+		"bun",
+		"hot-reload",
+		"iot",
+		"automation",
+		"workflow",
+		"nodes",
+		"nrb"
+	]
+}
