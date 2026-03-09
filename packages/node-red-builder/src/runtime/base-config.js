@@ -3,11 +3,12 @@
 
 /**
  * @template {NodeDef & Record<string, any>} TConfig
+ * @template [TCredentials=Record<string, any>]
  * @template [TClient=any]
  */
 export class BaseConfigNode {
 	/** @type {NodeAPI} */ RED;
-	/** @type {Node & { credentials: Record<string, any> }} */ node;
+	/** @type {Node & { credentials: TCredentials }} */ node;
 	/** @type {TConfig} */ config;
 	/** @type {TClient|null} */ #client = null;
 	/** @type {{ method: string, path: string}[]} */ routes = [];

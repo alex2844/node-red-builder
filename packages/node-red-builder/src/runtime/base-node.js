@@ -3,10 +3,11 @@
 /**
  * @template {NodeDef & Record<string, any>} TProps
  * @template {{ getClient(): any }} [TConfigNode=any]
+ * @template [TCredentials=Record<string, any>]
  */
 export class BaseNode {
 	/** @type {NodeAPI} */ RED;
-	/** @type {Node} */ node;
+	/** @type {Node & { credentials: TCredentials }} */ node;
 	/** @type {TProps} */ props;
 	/** @type {TConfigNode|undefined} */ config;
 	/** @type {ReturnType<typeof setTimeout>|null} */ #statusTimeout = null;
