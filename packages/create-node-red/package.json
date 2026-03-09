@@ -1,0 +1,43 @@
+{
+	"name": "create-node-red",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Quickly scaffold a new Node-RED node project using Node-RED Builder and Bun",
+	"bin": {
+		"create-node-red": "./bin/create.js"
+	},
+	"scripts": {
+		"test": "tsc -p ./tsconfig.json"
+	},
+	"files": [
+		"./bin/"
+	],
+	"dependencies": {
+		"node-red-builder": "workspace:*",
+		"yargs": "^18.0.0"
+	},
+	"engines": {
+		"bun": ">=1.0.0"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/alex2844/node-red-builder.git",
+		"directory": "packages/create-node-red"
+	},
+	"keywords": [
+		"node-red",
+		"node-red-builder",
+		"create-node-red",
+		"scaffold",
+		"boilerplate",
+		"generator",
+		"template",
+		"cli",
+		"builder",
+		"bun",
+		"iot",
+		"automation",
+		"nrb"
+	]
+}
