@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"baseUrl": ".",
+		"paths": {
+			"node-red-builder": ["./packages/node-red-builder/src/runtime/index.js"],
+			"node-red-builder/cli/*": ["./packages/node-red-builder/src/cli/commands/*.js"],
+			"node-red-builder/ui": ["./packages/node-red-builder/src/ui/index.js"]
+		},
+		"checkJs": true,
+		"allowJs": true,
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true
+	},
+	"include": [
+		"./packages/*/src/**/*",
+		"./packages/*/bin/**/*",
+		"./packages/*/templates/**/*"
+	]
+}
