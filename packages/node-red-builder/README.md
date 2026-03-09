@@ -292,7 +292,7 @@ Clears the status badge immediately or after `delay` ms.
 Base class for configuration nodes.
 
 ```js
-/** @extends {BaseConfigNode<MyConfig, MyClient>} */
+/** @extends {BaseConfigNode<ConfigNodeDef, Credentials, MyClient>} */
 export class MyConfigNode extends BaseConfigNode {
     constructor(node, config, RED) {
         super(node, config, RED);

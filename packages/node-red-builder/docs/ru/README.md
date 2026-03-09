@@ -291,7 +291,7 @@ const { action, topic } = await this.getProps(
 Базовый класс для конфигурационных нод.
 
 ```js
-/** @extends {BaseConfigNode<MyConfig, MyClient>} */
+/** @extends {BaseConfigNode<ConfigNodeDef, Credentials, MyClient>} */
 export class MyConfigNode extends BaseConfigNode {
     constructor(node, config, RED) {
         super(node, config, RED);
