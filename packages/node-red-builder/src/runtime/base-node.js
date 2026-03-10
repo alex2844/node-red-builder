@@ -63,13 +63,14 @@ export class BaseNode {
 	/**
 	 * Evaluates multiple typed properties from the node config in parallel.
 	 *
-	 * @param {string[]} keys
+	 * @template {string} K
+	 * @param {K[]} keys
 	 * @param {NodeMessage} msg
-	 * @returns {Promise<Record<string, any>>}
+	 * @returns {Promise<{ [P in K]: any }>}
 	 */
 	async getProps(keys, msg) {
 		const results = await Promise.all(keys.map(key => this.getProp(key, msg)));
-		return Object.fromEntries(keys.map((key, i) => [key, results[i]]));
+		return /** @type {any} */ (Object.fromEntries(keys.map((key, i) => [key, results[i]])));
 	}
 
 	/**
