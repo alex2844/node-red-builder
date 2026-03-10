@@ -1,5 +1,5 @@
 import path from 'path';
-import { access } from 'fs/promises';
+import { access, readFile } from 'fs/promises';
 
 /**
  * @typedef {object} BuilderConfig
@@ -27,8 +27,26 @@ export async function loadConfig() {
 		console.log('ℹ️  No node-red-builder.config.js found, using defaults.');
 	}
 
+	let prefix = userConfig.prefix;
+	if (!prefix)
+		try {
+			const pkgPath = path.join(cwd, 'package.json');
+			const pkgRaw = await readFile(pkgPath, 'utf8');
+			const pkg = JSON.parse(pkgRaw);
+
+			if (pkg.name) {
+				let name = pkg.name.split('/').pop();
+				name = name.replace(/^node-red-contrib-/, '')
+					.replace(/^node-red-/, '');
+				prefix = name;
+			}
+		} catch {}
+
+	if (!prefix)
+		prefix = cwd.split(path.sep).pop()?.split('-').pop() || 'custom';
+
 	return {
-		prefix: userConfig.prefix || cwd.split(path.sep).pop()?.split('-').pop() || 'custom',
+		prefix,
 		srcDir: path.resolve(cwd, userConfig.srcDir || 'src'),
 		distDir: path.resolve(cwd, userConfig.distDir || 'dist'),
 		docsDir: path.resolve(cwd, userConfig.docsDir || 'docs'),
