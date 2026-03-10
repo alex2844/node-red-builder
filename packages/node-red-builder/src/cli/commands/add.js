@@ -26,7 +26,8 @@ export async function add(/** @type {string} */ nodeName) {
 	const replacements = {
 		'__PREFIX__': config.prefix,
 		'__NODE_NAME__': nodeName,
-		'__NODE_CLASS__': nodeClass
+		'__NODE_CLASS__': nodeClass,
+		'__COLOR__': config.palette.color
 	};
 
 	await copyTemplate('src/nodes/node/runtime.js', `src/nodes/${nodeName}/runtime.js`, replacements);

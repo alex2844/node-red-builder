@@ -43,7 +43,8 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 	const replacements = {
 		'__PREFIX__': prefix,
 		'__NODE_NAME__': 'example',
-		'__NODE_CLASS__': 'ExampleNode'
+		'__NODE_CLASS__': 'ExampleNode',
+		'__COLOR__': '#a6bbcf'
 	};
 
 	const pkgPath = path.join(cwd, 'package.json');

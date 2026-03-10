@@ -9,6 +9,7 @@ import { access, readFile } from 'fs/promises';
  * @property {string} docsDir
  * @property {string} localesDir
  * @property {number} port
+ * @property {{ color: string }} palette
  */
 
 /**
@@ -51,6 +52,9 @@ export async function loadConfig() {
 		distDir: path.resolve(cwd, userConfig.distDir || 'dist'),
 		docsDir: path.resolve(cwd, userConfig.docsDir || 'docs'),
 		localesDir: path.resolve(cwd, userConfig.localesDir || 'src/locales'),
-		port: Number(userConfig.port) || 3000
+		port: Number(userConfig.port) || 3000,
+		palette: {
+			color: userConfig.palette?.color || '#a6bbcf'
+		}
 	};
 }

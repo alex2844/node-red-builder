@@ -18,7 +18,7 @@ RED.nodes.registerType('__PREFIX__-__NODE_NAME__', {
 	inputs: 1,
 	outputs: 1,
 	icon: 'font-awesome/fa-circle',
-	color: '#a6bbcf',
+	color: '__COLOR__',
 	paletteLabel: '__NODE_NAME__',
 	label: function () {
 		return this.name || '__NODE_NAME__';
