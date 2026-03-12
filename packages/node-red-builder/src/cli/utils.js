@@ -39,6 +39,16 @@ export function getTemplatesDir() {
 }
 
 /**
+ * Escapes a string for use in a regular expression.
+ *
+ * @param {string} string
+ * @returns {string}
+ */
+function escapeRegExp(string) {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Copies a template file to a destination with variable replacements.
  *
  * @param {string} srcRelativePath - Path relative to the templates directory.
@@ -59,7 +69,11 @@ export async function copyTemplate(srcRelativePath, destRelativePath, replacemen
 		let content = await fs.readFile(srcPath, 'utf8');
 
 		for (const [key, value] of Object.entries(replacements)) {
-			content = content.replace(new RegExp(key, 'g'), value);
+			if (value === '') {
+				const regex = new RegExp(`^.*${escapeRegExp(key)}.*(\\r?\\n|$)`, 'gm');
+				content = content.replace(regex, '');
+			} else
+				content = content.replace(new RegExp(escapeRegExp(key), 'g'), value);
 		}
 
 		await fs.writeFile(destPath, content, 'utf8');

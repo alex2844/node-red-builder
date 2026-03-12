@@ -9,6 +9,7 @@ let /** @type {EditorRED} */ RED = /** @type {any} */ (window).RED;
 RED.nodes.registerType('__PREFIX__-__NODE_NAME__', {
 	category: '__PREFIX__',
 	/** @type {EditorDefaults<__NODE_CLASS__['props']>} */ defaults: {
+		// __CONFIG_ENTRY__
 		name: { value: '' },
 		action: { value: ACTION.APPLY },
 		actionType: { value: 'action' },

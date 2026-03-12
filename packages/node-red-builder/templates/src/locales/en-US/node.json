@@ -2,6 +2,7 @@
 	"__NODE_NAME__": {
 		"label": {
 			"name": "Name",
+			"config": "Config",
 			"action": "Action",
 			"topic": "Topic"
 		},

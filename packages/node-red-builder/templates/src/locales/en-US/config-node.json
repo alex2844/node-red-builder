@@ -1,0 +1,12 @@
+{
+	"__NODE_NAME__": {
+		"label": {
+			"name": "Name",
+			"host": "Host",
+			"port": "Port"
+		},
+		"placeholder": {
+			"name": "My Config"
+		}
+	}
+}
