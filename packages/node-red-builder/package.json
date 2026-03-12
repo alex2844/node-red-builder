@@ -1,6 +1,6 @@
 {
 	"name": "node-red-builder",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"type": "module",
 	"description": "Core runtime and CLI for Node-RED Builder - develop Node-RED nodes with Hot Reload and IDE-friendly JSDoc types",
 	"sideEffects": false,
