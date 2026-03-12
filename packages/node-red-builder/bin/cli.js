@@ -8,19 +8,18 @@ import { dev } from '../src/cli/commands/dev.js';
 import { start } from '../src/cli/commands/start.js';
 import { init } from '../src/cli/commands/init.js';
 import { add } from '../src/cli/commands/add.js';
-
-const { version } = await Bun.file(new URL('../package.json', import.meta.url)).json();
+import pkg from '../package.json' with { type: 'json' };
 
 await yargs(hideBin(process.argv))
 	.scriptName('nrb')
 	.usage('$0 <command> [options]')
 
 	.command('init [projectDir]', 'Initialize a new project', (yargs) => {
-		yargs.positional('projectDir', {
+		return yargs.positional('projectDir', {
 			type: 'string',
 			describe: 'Target directory for the project'
 		});
-	}, async (/** @type {any} */ argv) => {
+	}, async (argv) => {
 		await init(argv.projectDir);
 	})
 
@@ -70,10 +69,8 @@ await yargs(hideBin(process.argv))
 		await start(config, argv);
 	})
 
-	.help()
-	.alias('h', 'help')
-	.version(version)
-	.alias('v', 'version')
+	.help().alias('h', 'help')
+	.version(pkg.version).alias('v', 'version')
 	.demandCommand(1, 'You need at least one command before moving on')
 	.strict()
 	.recommendCommands()

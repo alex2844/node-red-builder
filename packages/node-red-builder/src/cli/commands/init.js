@@ -1,6 +1,18 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { copyTemplate } from '../utils.js';
+import { copyTemplate, generateNode } from '../utils.js';
+import pkg from '../../../package.json' with { type: 'json' };
+
+const devDependencies = {
+	"@types/node-red": "^1.3.5",
+	'node-red': '^4.1.7',
+	'node-red-builder': `^${pkg.version}`,
+	"typescript": "^5.9.3"
+};
+
+const engines = {
+	'node': '>=18.0.0'
+};
 
 function getPackageManager() {
 	const agent = process.env.npm_config_user_agent || '';
@@ -16,29 +28,57 @@ function getPackageManager() {
 }
 
 export async function init(/** @type {string|undefined} */ targetDir) {
+	let cwd = process.cwd();
+	const isPackagesDir = cwd.endsWith(path.sep + 'packages') || cwd === 'packages';
+	let rootPkg = null;
+
+	if (isPackagesDir)
+		try {
+			const rootPkgPath = path.join(cwd, '../package.json');
+			const content = await fs.readFile(rootPkgPath, 'utf8');
+			rootPkg = JSON.parse(content);
+		} catch {}
+
+	if (!targetDir && rootPkg) {
+		targetDir = 'node-red';
+		console.log(`ℹ️  Detected monorepo "packages" directory. Defaulting target to "${targetDir}".`);
+	}
+
 	if (targetDir) {
 		await fs.mkdir(targetDir, { recursive: true });
 		process.chdir(targetDir);
+		cwd = process.cwd();
 	}
 
-	const cwd = process.cwd();
 	console.log('🚀 Initializing new node-red-builder project...\n');
 
-	const projectName = cwd.split(path.sep).pop();
-	if (!projectName) {
+	const folderName = cwd.split(path.sep).pop();
+	if (!folderName) {
 		console.error('❌ Could not determine project name from directory.');
 		return;
 	}
 
-	let prefix = projectName
-		.replace(/^node-red-contrib-/, '')
-		.replace(/^node-red-/, '')
-		.toLowerCase()
-		.replace(/\s+/g, '-');
+	let prefix = '';
+	const isGenericName = ['node-red', 'app', 'server', 'node-intersvyaz', 'backend', 'pkg', 'package'].includes(folderName);
+
+	if (isGenericName && rootPkg?.name) {
+		prefix = rootPkg.name
+			.split('/').pop()
+			.replace(/^node-/, '')
+			.replace(/-node$/, '')
+			.toLowerCase();
+		console.log(`ℹ️  Using root project name as base for prefix: "${prefix}"`);
+	} else
+		prefix = folderName
+			.replace(/^node-red-contrib-/, '')
+			.replace(/^node-red-/, '')
+			.toLowerCase()
+			.replace(/\s+/g, '-');
+
 	if (!prefix || prefix === 'node-red')
 		prefix = 'custom';
 
-	console.log(`⚙️  Guessed prefix: "${prefix}"`);
+	console.log(`⚙️  Resolved prefix: "${prefix}"`);
 
 	const replacements = {
 		'__PREFIX__': prefix,
@@ -58,6 +98,7 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 			'version': '1.0.0',
 			'type': 'module',
 			'scripts': {
+				'test': 'tsc -p ./tsconfig.json',
 				'start': 'node-red-builder start',
 				'dev': 'node-red-builder dev',
 				'build': 'node-red-builder build',
@@ -73,15 +114,34 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 				'./dist/',
 				'./examples/'
 			],
-			'devDependencies': {
-				'node-red': 'latest',
-				'node-red-builder': 'latest'
-			},
-			'engines': {
-				'node': '>=18.0.0'
-			}
+			devDependencies, engines
 		}, null, 2) + '\n');
 		console.log(`✅ Created: package.json`);
+	}
+
+	const tsconfigPath = path.join(cwd, 'tsconfig.json');
+	try {
+		await fs.access(tsconfigPath);
+		console.log(`⏭️  Skipped: tsconfig.json`);
+	} catch {
+		await fs.writeFile(tsconfigPath, JSON.stringify({
+			'compilerOptions': {
+				'target': 'ESNext',
+				'module': 'ESNext',
+				'moduleResolution': 'bundler',
+				'baseUrl': '.',
+				'checkJs': true,
+				'allowJs': true,
+				'strict': true,
+				'noEmit': true,
+				'skipLibCheck': true,
+				'resolveJsonModule': true
+			},
+			'include': [
+				'./src/**/*.js'
+			]
+		}, null, 2) + '\n');
+		console.log(`✅ Created: tsconfig.json`);
 	}
 
 	const gitignorePath = path.join(cwd, '.gitignore');
@@ -94,11 +154,7 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 	}
 
 	await copyTemplate('node-red-builder.config.js', 'node-red-builder.config.js', replacements);
-	await copyTemplate('src/nodes/node/runtime.js', 'src/nodes/example/runtime.js', replacements);
-	await copyTemplate('src/nodes/node/ui.js', 'src/nodes/example/ui.js', replacements);
-	await copyTemplate('src/nodes/node/template.html', 'src/nodes/example/template.html', replacements);
-	await copyTemplate('src/locales/en-US/node.json', 'src/locales/en-US/example.json', replacements);
-	await copyTemplate('docs/en-US/nodes/node.md', 'docs/en-US/nodes/example.md', replacements);
+	await generateNode({ prefix, nodeName: 'example', color: '#a6bbcf' });
 
 	const pm = getPackageManager();
 	console.log('\n🎉 Project initialized successfully!');

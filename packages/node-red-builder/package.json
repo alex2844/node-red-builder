@@ -11,6 +11,10 @@
 			"types": "./types/runtime/index.d.ts",
 			"default": "./src/runtime/index.js"
 		},
+		"./config": {
+			"types": "./types/cli/config.d.ts",
+			"default": "./src/cli/config.js"
+		},
 		"./cli/*": {
 			"types": "./types/cli/commands/*.ts",
 			"default": "./src/cli/commands/*.js"
