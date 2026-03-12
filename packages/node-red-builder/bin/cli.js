@@ -24,13 +24,25 @@ await yargs(hideBin(process.argv))
 		await init(argv.projectDir);
 	})
 
-	.command('add <name>', 'Add a new node to existing project', (yargs) => {
-		yargs.positional('name', {
-			type: 'string',
-			describe: 'Name of the node (e.g., temperature-sensor)'
-		});
-	}, async (/** @type {any} */ argv) => {
-		await add(argv.name);
+	.command('add [name]', 'Add a new node to existing project', (yargs) => {
+		return yargs
+			.positional('name', {
+				type: 'string',
+				describe: 'Name of the node (e.g., temperature-sensor)'
+			})
+			.option('type', {
+				type: 'string',
+				choices: /** @type {const} */ (['node', 'config']),
+				default: /** @type {const} */ ('node'),
+				describe: 'Type of node to create'
+			})
+			.check((argv) => {
+				if (argv.type === 'node' && !argv.name)
+					throw new Error('The "name" argument is required when type=node');
+				return true;
+			});
+	}, async (argv) => {
+		await add(argv.name, argv.type);
 	})
 
 	.command('build', 'Build all nodes for production', async () => {

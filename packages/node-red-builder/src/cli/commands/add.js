@@ -1,13 +1,35 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { loadConfig } from '../config.js';
-import { copyTemplate, toPascalCase } from '../utils.js';
+import { generateNode } from '../utils.js';
 
-export async function add(/** @type {string} */ nodeName) {
+async function detectConfigNodes(/** @type {string} */ cwd) {
+	const nodesDir = path.join(cwd, 'src/nodes');
+	try {
+		const dirs = await fs.readdir(nodesDir);
+		const configs = [];
+		for (const dir of dirs) {
+			const uiPath = path.join(nodesDir, dir, 'ui.js');
+			try {
+				const content = await fs.readFile(uiPath, 'utf8');
+				if (content.includes("category: 'config'"))
+					configs.push(dir);
+			} catch {}
+		}
+		return configs;
+	} catch {
+		return [];
+	}
+}
+
+export async function add(/** @type {string|undefined} */ nodeName, /** @type {'node'|'config'} */ type = 'node') {
+	const isConfigNode = type === 'config';
+	if (isConfigNode && !nodeName)
+		nodeName = 'config';
+
 	if (!nodeName) {
 		console.error('❌ Please provide a node name.');
 		console.error('   Usage: nrb add <node-name>');
-		console.error('   Example: nrb add temperature-sensor');
 		process.exit(1);
 	}
 
@@ -18,23 +40,45 @@ export async function add(/** @type {string} */ nodeName) {
 	}
 
 	const cwd = process.cwd();
+
+	try {
+		await fs.access(path.join(cwd, 'src/nodes', nodeName));
+		console.error(`❌ Node "${nodeName}" already exists.`);
+		console.error(`   Please choose a different name or delete the existing directory: src/nodes/${nodeName}`);
+		process.exit(1);
+	} catch {}
+
 	const config = await loadConfig();
-	const nodeClass = toPascalCase(nodeName) + 'Node';
 
-	console.log(`\n➕ Adding node: "${config.prefix}-${nodeName}"\n`);
+	console.log(`\n➕ Adding ${type} node: "${config.prefix}-${nodeName}"\n`);
 
-	const replacements = {
-		'__PREFIX__': config.prefix,
-		'__NODE_NAME__': nodeName,
-		'__NODE_CLASS__': nodeClass,
-		'__COLOR__': config.palette.color
-	};
+	let linkedConfigNode;
 
-	await copyTemplate('src/nodes/node/runtime.js', `src/nodes/${nodeName}/runtime.js`, replacements);
-	await copyTemplate('src/nodes/node/ui.js', `src/nodes/${nodeName}/ui.js`, replacements);
-	await copyTemplate('src/nodes/node/template.html', `src/nodes/${nodeName}/template.html`, replacements);
-	await copyTemplate('src/locales/en-US/node.json', `src/locales/en-US/${nodeName}.json`, replacements);
-	await copyTemplate('docs/en-US/nodes/node.md', `docs/en-US/nodes/${nodeName}.md`, replacements);
+	if (!isConfigNode) {
+		const configNodes = await detectConfigNodes(cwd);
+
+		if (configNodes.length === 1) {
+			const answer = prompt(`🔗 Found configuration node "${configNodes[0]}". Use it? (y/N)`);
+			if (answer?.toLowerCase() === 'y')
+				linkedConfigNode = configNodes[0];
+		} else if (configNodes.length > 1) {
+			console.log('🔗 Found multiple configuration nodes:');
+			configNodes.forEach((name, i) => console.log(`   ${i + 1}. ${name}`));
+			const answer = prompt(`   Select a config node (1-${configNodes.length}) or press Enter to skip:`);
+			const idx = parseInt(answer || '0') - 1;
+			if (idx >= 0 && idx < configNodes.length)
+				linkedConfigNode = configNodes[idx];
+		}
+
+		if (linkedConfigNode)
+			console.log(`✅ Linking to "${linkedConfigNode}"`);
+	}
+
+	await generateNode({
+		type, nodeName, linkedConfigNode,
+		prefix: config.prefix,
+		color: config.palette.color
+	});
 
 	const pkgPath = path.join(cwd, 'package.json');
 	try {

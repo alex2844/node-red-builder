@@ -112,3 +112,65 @@ export async function linkPackage() {
 		console.log(`🔗 Linked package "${pkgName}"`);
 	} catch {}
 }
+
+/**
+ * Generates a new node (or config node) from templates.
+ *
+ * @param {object} options
+ * @param {string} options.nodeName - The kebab-case name of the node (e.g. "my-device").
+ * @param {string} options.prefix - The project prefix (e.g. "custom").
+ * @param {string} options.color - The node color.
+ * @param {'node'|'config'} [options.type='node'] - Type of node to generate.
+ * @param {string} [options.linkedConfigNode] - Name of the config node to link to (if any).
+ */
+export async function generateNode({ nodeName, prefix, color, type = 'node', linkedConfigNode }) {
+	const isConfigNode = type === 'config';
+	const pascalName = toPascalCase(nodeName);
+
+	let suffix = 'Node';
+	if (isConfigNode) {
+		if (!pascalName.endsWith('Config'))
+			suffix = 'Config' + suffix;
+	}
+	const nodeClass = pascalName + suffix;
+
+	let configEntry = '';
+	let configRow = '';
+	let propsType = "Omit<BaseNodeProps, 'config'>";
+
+	if (linkedConfigNode) {
+		configEntry = `config: { value: '', type: '${prefix}-${linkedConfigNode}', required: true },`;
+		configRow = [
+			'<div class="form-row">',
+			'\t<label for="node-input-config">',
+			'\t\t<i class="fa fa-globe"></i>',
+			`\t\t<span data-i18n="${nodeName}.label.config"></span>`,
+			'\t</label>',
+			'\t<input type="text" id="node-input-config" />',
+			'</div>'
+		].join('\n');
+		propsType = 'BaseNodeProps';
+	}
+
+	const replacements = {
+		'__PREFIX__': prefix,
+		'__NODE_NAME__': nodeName,
+		'__NODE_CLASS__': nodeClass,
+		'__COLOR__': color,
+		'// __CONFIG_ENTRY__': configEntry,
+		'<!-- __CONFIG_ROW__ -->': configRow,
+		"Omit<BaseNodeProps, 'config'>": propsType
+	};
+
+	const templateDir = isConfigNode ? 'src/nodes/config' : 'src/nodes/node';
+
+	await copyTemplate(`${templateDir}/runtime.js`, `src/nodes/${nodeName}/runtime.js`, replacements);
+	await copyTemplate(`${templateDir}/ui.js`, `src/nodes/${nodeName}/ui.js`, replacements);
+	await copyTemplate(`${templateDir}/template.html`, `src/nodes/${nodeName}/template.html`, replacements);
+
+	const localeTemplate = isConfigNode ? 'src/locales/en-US/config-node.json' : 'src/locales/en-US/node.json';
+	await copyTemplate(localeTemplate, `src/locales/en-US/${nodeName}.json`, replacements);
+
+	if (!isConfigNode)
+		await copyTemplate('docs/en-US/nodes/node.md', `docs/en-US/nodes/${nodeName}.md`, replacements);
+}
