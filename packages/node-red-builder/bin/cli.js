@@ -39,23 +39,21 @@ await yargs(hideBin(process.argv))
 	})
 
 	.command('dev', 'Build and start Node-RED with hot reload', (yargs) => {
-		yargs.option('port', {
+		return yargs.option('port', {
 			type: 'number',
-			describe: 'Override port from config',
-			default: 3000
+			describe: 'Override port from config'
 		});
-	}, async (/** @type {any} */ argv) => {
+	}, async (argv) => {
 		const config = await loadConfig();
 		await dev(config, argv);
 	})
 
 	.command('start', 'Start Node-RED only (no build, no watch)', (yargs) => {
-		yargs.option('port', {
+		return yargs.option('port', {
 			type: 'number',
-			describe: 'Override port from config',
-			default: 3000
+			describe: 'Override port from config'
 		});
-	}, async (/** @type {any} */ argv) => {
+	}, async (argv) => {
 		const config = await loadConfig();
 		await start(config, argv);
 	})
