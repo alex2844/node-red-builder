@@ -29,43 +29,51 @@ CLI и рантайм-фреймворк для разработки нод Node
 Генерирует:
 
 - `package.json` с секцией `node-red.nodes` и скриптами
+- `tsconfig.json` для проверки типов TypeScript и JSDoc
 - `node-red-builder.config.js`
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
 - `.gitignore`
 
-`prefix` определяется из имени директории — убирает префиксы
-`node-red-contrib-` и `node-red-`.
+`prefix` определяется автоматически из имени директории или из
+корневого `package.json`, если проект находится в монорепозитории.
+Префиксы `node-red-contrib-` и `node-red-` отсекаются.
 
 Эта команда вызывается внутренне из `create-node-red`.
 
 ---
 
-### `nrb add <n>`
+### `nrb add [name] [--type <t>]`
 
-Добавляет новую ноду в существующий проект. Имя должно быть в
-нижнем регистре, начинаться с буквы, содержать только буквы,
-цифры и дефисы.
+Добавляет новую ноду в существующий проект. Если тип `config`
+и имя не указано, оно будет `config` по умолчанию.
+
+- `<name>` — имя ноды в kebab-case (например, `my-device`).
+- `--type` — `node` (по умолчанию) или `config`.
+
+Инструмент автоматически обнаруживает существующие узлы
+конфигурации и предлагает привязать к ним новый узел.
 
 Создаёт:
 
-- `src/nodes/<n>/runtime.js`
-- `src/nodes/<n>/ui.js`
-- `src/nodes/<n>/template.html`
-- `src/locales/en-US/<n>.json`
-- `docs/en-US/nodes/<n>.md`
+- `src/nodes/<name>/runtime.js`
+- `src/nodes/<name>/ui.js`
+- `src/nodes/<name>/template.html`
+- `src/locales/en-US/<name>.json`
+- `docs/en-US/nodes/<name>.md` (только для функциональных нод)
 
 Добавляет запись в `package.json`:
 
 ```json
 "node-red": {
-    "nodes": { "<n>": "dist/nodes/<n>.js" }
+    "nodes": { "<name>": "dist/nodes/<name>.js" }
 }
 ```
 
 ```bash
 bunx nrb add temperature-sensor
+bunx nrb add --type config
 ```
 
 ---
@@ -96,10 +104,8 @@ bunx nrb add temperature-sensor
 При изменениях пересобирает и перезапускает Node-RED
 (дебаунс 300 мс).
 
-Изменения `node-red-builder.config.js` или `package.json`
-вызывают перезагрузку конфигурации перед пересборкой.
-
-Порт по умолчанию — 3000.
+Порт читается из `node-red-builder.config.js` или по
+умолчанию 3000. Флаг `--port` имеет приоритет.
 
 ---
 
@@ -108,13 +114,14 @@ bunx nrb add temperature-sensor
 Настраивает dev-окружение и запускает Node-RED без сборки и
 наблюдения.
 
+Порт читается из `node-red-builder.config.js` или по
+умолчанию 3000. Флаг `--port` имеет приоритет.
+
 При `SIGINT` / `SIGTERM`:
 
 - Учётные данные сохраняются в `.cred.json`
 - Потоки, сохранённые в библиотеке Node-RED, перемещаются в
   `examples/`
-
-Порт по умолчанию — 3000.
 
 ---
 
@@ -145,12 +152,15 @@ export default {
     distDir: 'dist',
     docsDir: 'docs',
     localesDir: 'src/locales',
+    palette: {
+        color: '#a6bbcf', // цвет узла по умолчанию
+    },
 };
 ```
 
-Все пути разрешаются относительно `process.cwd()`. Файл
-необязателен; при его отсутствии используются значения по
-умолчанию.
+Все пути разрешаются относительно `process.cwd()`. Значение `palette.color`
+используется как подстановка `__COLOR__` при генерации новых узлов.
+Файл необязателен; при его отсутствии используются значения по умолчанию.
 
 ---
 
@@ -424,5 +434,6 @@ setupTypedInput('node-input-action', [{
 | Импорт | Типы |
 |---|---|
 | `node-red-builder` | `types/runtime/index.d.ts` |
+| `node-red-builder/config` | `types/cli/config.d.ts` |
 | `node-red-builder/ui` | `types/ui/index.d.ts` |
 | `node-red-builder/cli/<cmd>` | `types/cli/commands/<cmd>.d.ts` |

@@ -34,14 +34,17 @@ bunx create-node-red my-nodes
 Calls `nrb init [projectDir]`, which generates:
 
 - `package.json` with `node-red.nodes` entries and scripts
+- `tsconfig.json` for TypeScript and JSDoc type checking
 - `node-red-builder.config.js`
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
 - `.gitignore`
 
-The `prefix` is inferred from the directory name by stripping
-`node-red-contrib-` and `node-red-` prefixes.
+The `prefix` is automatically inferred from the directory
+name or the root `package.json` name if in a monorepo.
+Prefixes like `node-red-contrib-` and `node-red-` are
+stripped.
 
 Files that already exist are skipped.
 
@@ -55,6 +58,7 @@ Files that already exist are skipped.
     "version": "1.0.0",
     "type": "module",
     "scripts": {
+        "test":    "tsc -p ./tsconfig.json",
         "start":   "node-red-builder start",
         "dev":     "node-red-builder dev",
         "build":   "node-red-builder build",
@@ -66,8 +70,10 @@ Files that already exist are skipped.
     },
     "files": ["./dist/", "./examples/"],
     "devDependencies": {
-        "node-red":         "latest",
-        "node-red-builder": "latest"
+        "@types/node-red": "^1.3.5",
+        "node-red":         "^4.1.7",
+        "node-red-builder": "^1.1.0",
+        "typescript":       "^5.9.3"
     },
     "engines": { "node": ">=18.0.0" }
 }

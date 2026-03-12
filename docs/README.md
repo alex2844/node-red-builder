@@ -80,12 +80,14 @@ The generated `package.json` includes:
 npm run dev     build + start Node-RED + watch for changes
 npm run start   start Node-RED (no build, no watch)
 npm run build   build all nodes for production
+npm test        run type checking with tsc
 ```
 
 To add a new node to the project:
 
 ```bash
 bunx nrb add my-sensor
+bunx nrb add --type config
 ```
 
 ---
@@ -98,6 +100,9 @@ bunx nrb add my-sensor
 export default {
     prefix: 'my',
     port: 3000,
+    palette: {
+        color: '#a6bbcf',
+    },
     // srcDir: 'src',
     // distDir: 'dist',
     // docsDir: 'docs',

@@ -80,12 +80,14 @@ dist/
 npm run dev     сборка + запуск Node-RED + слежение за изменениями
 npm run start   запуск Node-RED (без сборки и слежения)
 npm run build   сборка всех нод для продакшена
+npm test        запуск проверки типов через tsc
 ```
 
 Добавить новую ноду в проект:
 
 ```bash
 bunx nrb add my-sensor
+bunx nrb add --type config
 ```
 
 ---
@@ -98,6 +100,9 @@ bunx nrb add my-sensor
 export default {
     prefix: 'my',
     port: 3000,
+    palette: {
+        color: '#a6bbcf',
+    },
     // srcDir: 'src',
     // distDir: 'dist',
     // docsDir: 'docs',

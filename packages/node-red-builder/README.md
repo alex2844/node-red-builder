@@ -30,43 +30,52 @@ Scaffolds a new project in the current directory or in
 Generates:
 
 - `package.json` with `node-red.nodes` entries and scripts
+- `tsconfig.json` for TypeScript and JSDoc type checking
 - `node-red-builder.config.js`
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
 - `.gitignore`
 
-The `prefix` is inferred from the directory name by stripping
-`node-red-contrib-` and `node-red-` prefixes.
+The `prefix` is automatically inferred from the directory
+name or the root `package.json` name if in a monorepo.
+Prefixes like `node-red-contrib-` and `node-red-` are
+stripped.
 
 This command is called internally by `create-node-red`.
 
 ---
 
-### `nrb add <n>`
+### `nrb add [name] [--type <t>]`
 
-Adds a new node to an existing project. The name must be
-lowercase, start with a letter, and contain only letters,
-numbers, and hyphens.
+Adds a new node to an existing project. If `type` is `config` and `name`
+is omitted, it defaults to `config`.
+
+- `<name>` — Kebab-case name of the node (e.g., `my-device`).
+- `--type` — `node` (default) or `config`.
+
+The tool automatically detects existing configuration nodes and offers to
+link the new node to one of them.
 
 Creates:
 
-- `src/nodes/<n>/runtime.js`
-- `src/nodes/<n>/ui.js`
-- `src/nodes/<n>/template.html`
-- `src/locales/en-US/<n>.json`
-- `docs/en-US/nodes/<n>.md`
+- `src/nodes/<name>/runtime.js`
+- `src/nodes/<name>/ui.js`
+- `src/nodes/<name>/template.html`
+- `src/locales/en-US/<name>.json`
+- `docs/en-US/nodes/<name>.md` (for functional nodes only)
 
 Also adds the entry to `package.json`:
 
 ```json
 "node-red": {
-    "nodes": { "<n>": "dist/nodes/<n>.js" }
+    "nodes": { "<name>": "dist/nodes/<name>.js" }
 }
 ```
 
 ```bash
 bunx nrb add temperature-sensor
+bunx nrb add --type config
 ```
 
 ---
@@ -98,10 +107,8 @@ Runs `nrb build`, starts Node-RED, then watches `src/`,
 On any change, rebuilds and restarts Node-RED (debounced
 at 300 ms).
 
-Config file changes (`node-red-builder.config.js`,
-`package.json`) cause the config to reload before rebuilding.
-
-The default port is 3000.
+The port is read from `node-red-builder.config.js` or
+defaults to 3000. Use the `--port` flag to override.
 
 ---
 
@@ -110,12 +117,13 @@ The default port is 3000.
 Sets up the dev environment and starts Node-RED without
 building or watching.
 
+The port is read from `node-red-builder.config.js` or
+defaults to 3000. Use the `--port` flag to override.
+
 On `SIGINT` / `SIGTERM`:
 
 - Credentials are saved to `.cred.json`
 - Flows saved in the Node-RED library are moved to `examples/`
-
-The default port is 3000.
 
 ---
 
@@ -147,11 +155,15 @@ export default {
     distDir: 'dist',
     docsDir: 'docs',
     localesDir: 'src/locales',
+    palette: {
+        color: '#a6bbcf', // default node color
+    },
 };
 ```
 
-All paths are resolved relative to `process.cwd()`. The file
-is optional; defaults are used if absent.
+All paths are resolved relative to `process.cwd()`. The `palette.color`
+is used as a template variable `__COLOR__` when generating new nodes.
+The file is optional; defaults are used if absent.
 
 ---
 
@@ -425,5 +437,6 @@ Declaration files are in `types/` (built from `src/` via
 | Import | Types |
 |---|---|
 | `node-red-builder` | `types/runtime/index.d.ts` |
+| `node-red-builder/config` | `types/cli/config.d.ts` |
 | `node-red-builder/ui` | `types/ui/index.d.ts` |
 | `node-red-builder/cli/<cmd>` | `types/cli/commands/<cmd>.d.ts` |
