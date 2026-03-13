@@ -1,10 +1,14 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { init } from 'node-red-builder/cli/init';
+import { readFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const { version } = await Bun.file(new URL('../package.json', import.meta.url)).json();
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(await readFile(join(__dirname, '../package.json'), 'utf8'));
 
 await yargs(hideBin(process.argv))
 	.scriptName('npm create node-red')
@@ -21,6 +25,6 @@ await yargs(hideBin(process.argv))
 	.example('$0 my-cool-node', 'Create "my-cool-node" directory and initialize project there')
 	.help()
 	.alias('h', 'help')
-	.version(version)
+	.version(pkg.version)
 	.alias('v', 'version')
 	.parse();

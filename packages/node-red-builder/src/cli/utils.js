@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 
 /**
  * Converts a kebab-case string to PascalCase.
@@ -35,7 +36,8 @@ export async function dirExists(dirPath) {
  * @returns {string}
  */
 export function getTemplatesDir() {
-	return path.resolve(import.meta.dir, '../../templates');
+	const __dirname = path.dirname(fileURLToPath(import.meta.url));
+	return path.resolve(__dirname, '../../templates');
 }
 
 /**

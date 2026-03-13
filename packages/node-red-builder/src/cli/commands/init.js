@@ -1,7 +1,10 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 import { copyTemplate, generateNode } from '../utils.js';
-import pkg from '../../../package.json' with { type: 'json' };
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(await fs.readFile(path.join(__dirname, '../../../package.json'), 'utf8'));
 
 const devDependencies = {
 	"@types/node-red": "^1.3.5",
@@ -11,17 +14,20 @@ const devDependencies = {
 };
 
 const engines = {
-	'node': '>=18.0.0'
+	'node': '>=18.0.0',
+	'bun': '>=1.0.0'
 };
 
 function getPackageManager() {
 	const agent = process.env.npm_config_user_agent || '';
-	if (agent.startsWith('bun'))
-		return 'bun';
-	if (agent.startsWith('pnpm'))
+	if (agent.includes('pnpm'))
 		return 'pnpm';
-	if (agent.startsWith('yarn'))
+	if (agent.includes('yarn'))
 		return 'yarn';
+	if (agent.includes('bun'))
+		return 'bun';
+	if (agent.includes('npm'))
+		return 'npm';
 	if (typeof Bun !== 'undefined')
 		return 'bun';
 	return 'npm';
