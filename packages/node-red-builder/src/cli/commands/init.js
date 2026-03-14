@@ -33,7 +33,7 @@ function getPackageManager() {
 	return 'npm';
 }
 
-export async function init(/** @type {string|undefined} */ targetDir) {
+export async function init(/** @type {string|undefined} */ targetDir, withExample = false) {
 	let cwd = process.cwd();
 	const isPackagesDir = cwd.endsWith(path.sep + 'packages') || cwd === 'packages';
 	let rootPkg = null;
@@ -112,7 +112,7 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 			},
 			'node-red': {
 				'version': '>=3.0.0',
-				'nodes': {
+				'nodes': !withExample ? {} : {
 					'example': 'dist/nodes/example.js'
 				}
 			},
@@ -160,14 +160,24 @@ export async function init(/** @type {string|undefined} */ targetDir) {
 	}
 
 	await copyTemplate('node-red-builder.config.js', 'node-red-builder.config.js', replacements);
-	await generateNode({ prefix, nodeName: 'example', color: '#a6bbcf' });
+
+	if (withExample)
+		await generateNode({ prefix, nodeName: 'example', color: '#a6bbcf' });
 
 	const pm = getPackageManager();
 	console.log('\n🎉 Project initialized successfully!');
 	console.log('\nNext steps:');
+
+	let step = 1;
 	if (targetDir)
-		console.log(`  1. cd ${targetDir}`);
-	console.log(`  ${targetDir ? '2' : '1'}. ${pm} install`);
-	console.log(`  ${targetDir ? '3' : '2'}. ${pm} run dev`);
+		console.log(`  ${step++}. cd ${targetDir}`);
+	console.log(`  ${step++}. ${pm} install`);
+
+	if (!withExample) {
+		const nrb = pm === 'bun' ? 'bun nrb' : 'npx nrb';
+		console.log(`  ${step++}. ${nrb} add my-node`);
+	}
+
+	console.log(`  ${step++}. ${pm} run dev`);
 	console.log('\nHappy coding! 🚀');
 }

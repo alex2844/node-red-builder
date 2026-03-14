@@ -15,12 +15,18 @@ await yargs(hideBin(process.argv))
 	.usage('$0 <command> [options]')
 
 	.command('init [projectDir]', 'Initialize a new project', (yargs) => {
-		return yargs.positional('projectDir', {
-			type: 'string',
-			describe: 'Target directory for the project'
-		});
+		return yargs
+			.positional('projectDir', {
+				type: 'string',
+				describe: 'Target directory for the project'
+			})
+			.option('example', {
+				type: 'boolean',
+				default: false,
+				describe: 'Create an example node'
+			});
 	}, async (argv) => {
-		await init(argv.projectDir);
+		await init(argv.projectDir, argv.example);
 	})
 
 	.command('add [name]', 'Add a new node to existing project', (yargs) => {
