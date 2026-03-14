@@ -8,13 +8,13 @@ import { BaseConfigNode, registerNode } from 'node-red-builder';
  * @property {number} port
  */
 
-/** @typedef {NodeDef & __NODE_CLASS__Props} __NODE_CLASS__Config */
+/** @typedef {NodeDef & __NODE_CLASS__Props} __NODE_CLASS__Def */
 
-/** @extends {BaseConfigNode<__NODE_CLASS__Config>} */
+/** @extends {BaseConfigNode<__NODE_CLASS__Def>} */
 export class __NODE_CLASS__ extends BaseConfigNode {
 	/**
 	 * @param {Node} node
-	 * @param {__NODE_CLASS__Config} config
+	 * @param {__NODE_CLASS__Def} config
 	 * @param {NodeAPI} RED
 	 */
 	constructor(node, config, RED) {

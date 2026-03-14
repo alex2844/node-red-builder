@@ -12,6 +12,6 @@ RED.nodes.registerType('__PREFIX__-__NODE_NAME__', {
 		port: { value: 8080, required: true, validate: RED.validators.number() }
 	},
 	label: function () {
-		return this.name || '__NODE_NAME__';
+		return this.name || '__PREFIX__';
 	}
 });
