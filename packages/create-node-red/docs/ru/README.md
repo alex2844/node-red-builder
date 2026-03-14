@@ -32,13 +32,16 @@ bunx create-node-red my-nodes
 
 Вызывает `nrb init [projectDir]`, который генерирует:
 
-- `package.json` с секцией `node-red.nodes` и скриптами
+- `package.json` со скриптами и пустой секцией `node-red.nodes`
 - `tsconfig.json` для проверки типов TypeScript и JSDoc
 - `node-red-builder.config.js`
+- `.gitignore`
+
+С флагом `--example` также генерируется узел-пример:
+
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
-- `.gitignore`
 
 `prefix` определяется автоматически из имени директории или из
 корневого `package.json`, если проект находится в монорепозитории.

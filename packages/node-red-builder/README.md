@@ -22,20 +22,26 @@ The `nrb` binary is available after installing the package.
 It is typically invoked via npm scripts (see generated
 `package.json` below) or with `bunx nrb`.
 
-### `nrb init [projectDir]`
+### `nrb init [projectDir] [--example]`
 
 Scaffolds a new project in the current directory or in
 `projectDir` if specified. Skips files that already exist.
 
+By default, it creates a clean project structure. Use the
+`--example` flag to also generate an example node.
+
 Generates:
 
-- `package.json` with `node-red.nodes` entries and scripts
+- `package.json` with scripts and empty `node-red.nodes`
 - `tsconfig.json` for TypeScript and JSDoc type checking
 - `node-red-builder.config.js`
+- `.gitignore`
+
+With `--example`, it also generates:
+
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
-- `.gitignore`
 
 The `prefix` is automatically inferred from the directory
 name or the root `package.json` name if in a monorepo.
@@ -184,7 +190,7 @@ The file is optional; defaults are used if absent.
     },
     "node-red": {
         "version": ">=3.0.0",
-        "nodes": { "example": "dist/nodes/example.js" }
+        "nodes": {}
     },
     "files": ["./dist/", "./examples/"],
     "devDependencies": {

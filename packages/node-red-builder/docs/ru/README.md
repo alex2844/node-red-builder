@@ -21,20 +21,26 @@ CLI и рантайм-фреймворк для разработки нод Node
 вызывается через npm-скрипты (см. сгенерированный `package.json`
 ниже) или через `bunx nrb`.
 
-### `nrb init [projectDir]`
+### `nrb init [projectDir] [--example]`
 
 Создаёт новый проект в текущей директории или в `projectDir`.
 Пропускает файлы, которые уже существуют.
 
+По умолчанию создаётся чистая структура проекта. Используйте
+флаг `--example`, чтобы также сгенерировать узел-пример.
+
 Генерирует:
 
-- `package.json` с секцией `node-red.nodes` и скриптами
+- `package.json` со скриптами и пустой секцией `node-red.nodes`
 - `tsconfig.json` для проверки типов TypeScript и JSDoc
 - `node-red-builder.config.js`
+- `.gitignore`
+
+С флагом `--example` также генерируются:
+
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
-- `.gitignore`
 
 `prefix` определяется автоматически из имени директории или из
 корневого `package.json`, если проект находится в монорепозитории.
@@ -181,7 +187,7 @@ export default {
     },
     "node-red": {
         "version": ">=3.0.0",
-        "nodes": { "example": "dist/nodes/example.js" }
+        "nodes": {}
     },
     "files": ["./dist/", "./examples/"],
     "devDependencies": {

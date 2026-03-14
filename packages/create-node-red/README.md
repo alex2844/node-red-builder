@@ -33,13 +33,16 @@ bunx create-node-red my-nodes
 
 Calls `nrb init [projectDir]`, which generates:
 
-- `package.json` with `node-red.nodes` entries and scripts
+- `package.json` with scripts and empty `node-red.nodes`
 - `tsconfig.json` for TypeScript and JSDoc type checking
 - `node-red-builder.config.js`
+- `.gitignore`
+
+With `--example` flag, it also generates an example node:
+
 - `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
-- `.gitignore`
 
 The `prefix` is automatically inferred from the directory
 name or the root `package.json` name if in a monorepo.
