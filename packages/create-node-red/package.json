@@ -1,6 +1,6 @@
 {
 	"name": "create-node-red",
-	"version": "1.0.2",
+	"version": "0.0.0",
 	"type": "module",
 	"description": "Quickly scaffold a new Node-RED node project using Node-RED Builder and Bun",
 	"bin": {
