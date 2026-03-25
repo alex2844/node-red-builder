@@ -1,6 +1,7 @@
 import { BaseNode, registerNode } from 'node-red-builder';
 /** @import { NodeMessage, NodeAPI } from 'node-red' */
 /** @import { NodeProps as BaseNodeProps } from 'node-red-builder' */
+// __CONFIG_IMPORT__
 
 /** @typedef {(typeof ACTION)[keyof typeof ACTION]} Action */
 export const ACTION = /** @type {const} */ ({

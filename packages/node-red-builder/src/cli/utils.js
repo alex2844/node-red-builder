@@ -130,6 +130,23 @@ export async function linkPackage() {
 }
 
 /**
+ * Computes the class name for a node based on its name and type.
+ *
+ * @param {string} nodeName
+ * @param {'node'|'config'} type
+ * @returns {string}
+ */
+function getNodeClassName(nodeName, type) {
+	const pascalName = toPascalCase(nodeName);
+	let suffix = 'Node';
+	if (type === 'config') {
+		if (!pascalName.endsWith('Config'))
+			suffix = 'Config' + suffix;
+	}
+	return pascalName + suffix;
+}
+
+/**
  * Generates a new node (or config node) from templates.
  *
  * @param {object} options
@@ -137,25 +154,23 @@ export async function linkPackage() {
  * @param {string} options.prefix - The project prefix (e.g. "custom").
  * @param {string} options.color - The node color.
  * @param {'node'|'config'} [options.type='node'] - Type of node to generate.
- * @param {string} [options.linkedConfigNode] - Name of the config node to link to (if any).
+ * @param {string} [options.configNode] - Name of the config node to link to (if any).
  */
-export async function generateNode({ nodeName, prefix, color, type = 'node', linkedConfigNode }) {
+export async function generateNode({ nodeName, prefix, color, type = 'node', configNode }) {
 	const isConfigNode = type === 'config';
-	const pascalName = toPascalCase(nodeName);
-
-	let suffix = 'Node';
-	if (isConfigNode) {
-		if (!pascalName.endsWith('Config'))
-			suffix = 'Config' + suffix;
-	}
-	const nodeClass = pascalName + suffix;
+	const nodeClass = getNodeClassName(nodeName, type);
 
 	let configEntry = '';
 	let configRow = '';
+	let configImport = '';
 	let propsType = "Omit<BaseNodeProps, 'config'>";
+	let baseNodeExtends = '/** @extends {BaseNode<NodeProps>} */';
 
-	if (linkedConfigNode) {
-		configEntry = `config: { value: '', type: '${prefix}-${linkedConfigNode}', required: true },`;
+	if (configNode) {
+		const configNodeClass = getNodeClassName(configNode, 'config');
+		baseNodeExtends = `/** @extends {BaseNode<NodeProps, ${configNodeClass}>} */`;
+		configImport = `/** @import { ${configNodeClass} } from '../${configNode}/runtime.js' */`;
+		configEntry = `config: { value: '', type: '${prefix}-${configNode}', required: true },`;
 		configRow = [
 			'<div class="form-row">',
 			'\t<label for="node-input-config">',
@@ -173,8 +188,10 @@ export async function generateNode({ nodeName, prefix, color, type = 'node', lin
 		'__NODE_NAME__': nodeName,
 		'__NODE_CLASS__': nodeClass,
 		'__COLOR__': color,
+		'// __CONFIG_IMPORT__': configImport,
 		'// __CONFIG_ENTRY__': configEntry,
 		'<!-- __CONFIG_ROW__ -->': configRow,
+		'/** @extends {BaseNode<NodeProps>} */': baseNodeExtends,
 		"Omit<BaseNodeProps, 'config'>": propsType
 	};
 
