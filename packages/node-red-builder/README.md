@@ -52,16 +52,20 @@ This command is called internally by `create-node-red`.
 
 ---
 
-### `nrb add [name] [--type <t>]`
+### `nrb add [name] [--type <t>] [--config-node <n>] [--skip-config]`
 
 Adds a new node to an existing project. If `type` is `config` and `name`
 is omitted, it defaults to `config`.
 
 - `<name>` — Kebab-case name of the node (e.g., `my-device`).
 - `--type` — `node` (default) or `config`.
+- `--config-node` — Pre-select a config node to link with (skips prompt).
+- `--skip-config` — Do not link with any config node (skips prompt).
 
 The tool automatically detects existing configuration nodes and offers to
-link the new node to one of them.
+link the new node to one of them. When linked, the generator automatically
+adds JSDoc imports and correct `@extends` parameters to `runtime.js` for
+full type safety in the editor.
 
 Creates:
 
