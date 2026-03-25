@@ -41,13 +41,22 @@ await yargs(hideBin(process.argv))
 				default: /** @type {const} */ ('node'),
 				describe: 'Type of node to create'
 			})
+			.option('config-node', {
+				type: 'string',
+				describe: 'Pre-select a config node to link with'
+			})
+			.option('skip-config', {
+				type: 'boolean',
+				default: false,
+				describe: 'Do not link with any config node'
+			})
 			.check((argv) => {
 				if (argv.type === 'node' && !argv.name)
 					throw new Error('The "name" argument is required when type=node');
 				return true;
 			});
 	}, async (argv) => {
-		await add(argv.name, argv.type);
+		await add(argv.name, argv.type, argv.configNode, argv.skipConfig);
 	})
 
 	.command('build', 'Build all nodes for production', async () => {

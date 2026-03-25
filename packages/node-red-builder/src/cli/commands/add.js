@@ -22,7 +22,14 @@ async function detectConfigNodes(/** @type {string} */ cwd) {
 	}
 }
 
-export async function add(/** @type {string|undefined} */ nodeName, /** @type {'node'|'config'} */ type = 'node') {
+/**
+ * @param {string|undefined} nodeName
+ * @param {'node'|'config'} type
+ * @param {string|undefined} configNode
+ * @param {boolean} skipConfig
+ * @returns {Promise<void>}
+ */
+export async function add(nodeName, type = 'node', configNode, skipConfig = false) {
 	const isConfigNode = type === 'config';
 	if (isConfigNode && !nodeName)
 		nodeName = 'config';
@@ -52,30 +59,28 @@ export async function add(/** @type {string|undefined} */ nodeName, /** @type {'
 
 	console.log(`\n➕ Adding ${type} node: "${config.prefix}-${nodeName}"\n`);
 
-	let linkedConfigNode;
-
-	if (!isConfigNode) {
+	if (!isConfigNode && !configNode && !skipConfig) {
 		const configNodes = await detectConfigNodes(cwd);
 
 		if (configNodes.length === 1) {
 			const answer = prompt(`🔗 Found configuration node "${configNodes[0]}". Use it? (y/N)`);
 			if (answer?.toLowerCase() === 'y')
-				linkedConfigNode = configNodes[0];
+				configNode = configNodes[0];
 		} else if (configNodes.length > 1) {
 			console.log('🔗 Found multiple configuration nodes:');
 			configNodes.forEach((name, i) => console.log(`   ${i + 1}. ${name}`));
 			const answer = prompt(`   Select a config node (1-${configNodes.length}) or press Enter to skip:`);
 			const idx = parseInt(answer || '0') - 1;
 			if (idx >= 0 && idx < configNodes.length)
-				linkedConfigNode = configNodes[idx];
+				configNode = configNodes[idx];
 		}
-
-		if (linkedConfigNode)
-			console.log(`✅ Linking to "${linkedConfigNode}"`);
 	}
 
+	if (configNode)
+		console.log(`✅ Linking to "${configNode}"`);
+
 	await generateNode({
-		type, nodeName, linkedConfigNode,
+		type, nodeName, configNode,
 		prefix: config.prefix,
 		color: config.palette.color
 	});
