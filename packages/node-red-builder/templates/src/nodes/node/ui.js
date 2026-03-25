@@ -2,7 +2,7 @@ import { setupTypedInput, createTypedInputOptions } from 'node-red-builder/ui';
 import { ACTION } from './runtime.js';
 /** @import { EditorRED } from 'node-red' */
 /** @import { EditorDefaults, TypedInputDefinition } from 'node-red-builder/ui' */
-/** @import { __NODE_CLASS__ } from './runtime.js' */
+/** @import { Action, __NODE_CLASS__ } from './runtime.js' */
 
 let /** @type {EditorRED} */ RED = /** @type {any} */ (window).RED;
 
@@ -11,7 +11,7 @@ RED.nodes.registerType('__PREFIX__-__NODE_NAME__', {
 	/** @type {EditorDefaults<__NODE_CLASS__['props']>} */ defaults: {
 		// __CONFIG_ENTRY__
 		name: { value: '' },
-		action: { value: ACTION.APPLY },
+		action: { value: /** @satisfies {Action} */ (ACTION.APPLY) },
 		actionType: { value: 'action' },
 		topic: { value: 'topic' },
 		topicType: { value: 'msg' }
