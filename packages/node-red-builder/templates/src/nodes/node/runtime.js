@@ -11,13 +11,13 @@ export const ACTION = /** @type {const} */ ({
 	UPDATE: 'update'
 });
 
-/** @typedef {Omit<BaseNodeProps, 'config'> & { action: Action|(string & {}), actionType: 'action'|'str'|'msg' }} NodeProps */
+/** @typedef {Omit<BaseNodeProps, 'config'> & { action: string, actionType: 'action'|'str'|'msg' }} NodeProps */
 
 /** @extends {BaseNode<NodeProps>} */
 export class __NODE_CLASS__ extends BaseNode {
 	async onInput(/** @type {NodeMessage} */ msg, /** @type {(msg: NodeMessage) => void} */ send) {
-		const /** @type {Action} */ action = await this.getProp('action', msg);
-		const /** @type {string} */ topic = await this.getProp('topic', msg);
+		/** @type {{ action: Action, topic: string }} */
+		const { action, topic } = await this.getProps(['action', 'topic'], msg);
 
 		this.setStatus(`Running: ${action}`, 'blue');
 
