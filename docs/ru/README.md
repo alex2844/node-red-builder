@@ -46,6 +46,7 @@ my-nodes/
 │   ├── nodes/
 │   │   └── example/
 │   │       ├── runtime.js       # Рантайм (Node.js)
+│   │       ├── shared.js        # Расшаренная логика и константы
 │   │       ├── ui.js            # Логика редактора (браузер)
 │   │       └── template.html    # HTML-шаблон панели
 │   └── locales/

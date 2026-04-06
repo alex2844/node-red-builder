@@ -39,7 +39,7 @@ bunx create-node-red my-nodes
 
 С флагом `--example` также генерируется узел-пример:
 
-- `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
+- `src/nodes/example/` — `runtime.js`, `shared.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
 

@@ -1,16 +1,9 @@
 import { BaseNode, registerNode } from 'node-red-builder';
+import { ACTION } from './shared.js';
 /** @import { NodeMessage, NodeAPI } from 'node-red' */
 /** @import { NodeProps as BaseNodeProps } from 'node-red-builder' */
+/** @import { Action } from './shared.js' */
 // __CONFIG_IMPORT__
-
-/** @typedef {(typeof ACTION)[keyof typeof ACTION]} Action */
-export const ACTION = /** @type {const} */ ({
-	APPLY: 'apply',
-	RESTART: 'restart',
-	ADD: 'add',
-	DEL: 'delete',
-	UPDATE: 'update'
-});
 
 /** @typedef {Omit<BaseNodeProps, 'config'> & { action: string, actionType: 'action'|'str'|'msg' }} NodeProps */
 

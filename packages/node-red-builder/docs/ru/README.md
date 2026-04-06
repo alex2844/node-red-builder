@@ -68,6 +68,7 @@ CLI и рантайм-фреймворк для разработки нод Node
 Создаёт:
 
 - `src/nodes/<name>/runtime.js`
+- `src/nodes/<name>/shared.js` (только для функциональных нод)
 - `src/nodes/<name>/ui.js`
 - `src/nodes/<name>/template.html`
 - `src/locales/en-US/<name>.json`

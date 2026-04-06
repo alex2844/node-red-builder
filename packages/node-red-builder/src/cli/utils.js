@@ -204,6 +204,8 @@ export async function generateNode({ nodeName, prefix, color, type = 'node', con
 	const localeTemplate = isConfigNode ? 'src/locales/en-US/config-node.json' : 'src/locales/en-US/node.json';
 	await copyTemplate(localeTemplate, `src/locales/en-US/${nodeName}.json`, replacements);
 
-	if (!isConfigNode)
+	if (!isConfigNode) {
+		await copyTemplate(`${templateDir}/shared.js`, `src/nodes/${nodeName}/shared.js`, replacements);
 		await copyTemplate('docs/en-US/nodes/node.md', `docs/en-US/nodes/${nodeName}.md`, replacements);
+	}
 }

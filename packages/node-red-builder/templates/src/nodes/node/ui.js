@@ -1,8 +1,9 @@
 import { setupTypedInput, createTypedInputOptions } from 'node-red-builder/ui';
-import { ACTION } from './runtime.js';
+import { ACTION } from './shared.js';
 /** @import { EditorRED } from 'node-red' */
 /** @import { EditorDefaults, TypedInputDefinition } from 'node-red-builder/ui' */
-/** @import { Action, __NODE_CLASS__ } from './runtime.js' */
+/** @import { Action } from './shared.js' */
+/** @import { __NODE_CLASS__ } from './runtime.js' */
 
 let /** @type {EditorRED} */ RED = /** @type {any} */ (window).RED;
 

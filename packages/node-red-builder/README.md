@@ -70,6 +70,7 @@ full type safety in the editor.
 Creates:
 
 - `src/nodes/<name>/runtime.js`
+- `src/nodes/<name>/shared.js` (for functional nodes only)
 - `src/nodes/<name>/ui.js`
 - `src/nodes/<name>/template.html`
 - `src/locales/en-US/<name>.json`

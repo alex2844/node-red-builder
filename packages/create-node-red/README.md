@@ -40,7 +40,7 @@ Calls `nrb init [projectDir]`, which generates:
 
 With `--example` flag, it also generates an example node:
 
-- `src/nodes/example/` — `runtime.js`, `ui.js`, `template.html`
+- `src/nodes/example/` — `runtime.js`, `shared.js`, `ui.js`, `template.html`
 - `src/locales/en-US/example.json`
 - `docs/en-US/nodes/example.md`
 

@@ -46,6 +46,7 @@ my-nodes/
 │   ├── nodes/
 │   │   └── example/
 │   │       ├── runtime.js       # Node.js runtime
+│   │       ├── shared.js        # Shared logic and constants
 │   │       ├── ui.js            # Browser editor logic
 │   │       └── template.html    # Editor panel HTML
 │   └── locales/
