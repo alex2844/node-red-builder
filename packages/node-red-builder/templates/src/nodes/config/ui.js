@@ -1,6 +1,6 @@
 /** @import { EditorRED } from 'node-red' */
 /** @import { EditorDefaults } from 'node-red-builder/ui' */
-/** @import { __NODE_CLASS__ } from './runtime.js' */
+/** @import { __NODE_CLASS__, credentials } from './runtime.js' */
 
 let /** @type {EditorRED} */ RED = /** @type {any} */ (window).RED;
 
@@ -10,6 +10,10 @@ RED.nodes.registerType('__PREFIX__-__NODE_NAME__', {
 		name: { value: '' },
 		host: { value: 'localhost', required: true },
 		port: { value: 8080, required: true, validate: RED.validators.number() }
+	},
+	/** @type {Partial<typeof credentials>} */ credentials: {
+		username: { type: 'text' },
+		token: { type: 'password' }
 	},
 	label: function () {
 		return this.name || '__PREFIX__';

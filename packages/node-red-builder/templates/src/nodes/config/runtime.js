@@ -1,5 +1,5 @@
 import { BaseConfigNode, registerNode } from 'node-red-builder';
-/** @import { Node, NodeAPI, NodeDef } from 'node-red' */
+/** @import { Node, NodeAPI, NodeDef, EditorNodeCredentials } from 'node-red' */
 
 /**
  * @typedef {object} __NODE_CLASS__Props
@@ -8,9 +8,15 @@ import { BaseConfigNode, registerNode } from 'node-red-builder';
  * @property {number} port
  */
 
+/**
+ * @typedef {object} __NODE_CLASS__Credentials
+ * @property {string} [username]
+ * @property {string} [token]
+ */
+
 /** @typedef {NodeDef & __NODE_CLASS__Props} __NODE_CLASS__Def */
 
-/** @extends {BaseConfigNode<__NODE_CLASS__Def>} */
+/** @extends {BaseConfigNode<__NODE_CLASS__Def, __NODE_CLASS__Credentials>} */
 export class __NODE_CLASS__ extends BaseConfigNode {
 	/**
 	 * @param {Node} node
@@ -22,4 +28,10 @@ export class __NODE_CLASS__ extends BaseConfigNode {
 	}
 }
 
-export default (/** @type {NodeAPI} */ RED) => registerNode(RED, '__PREFIX__-__NODE_NAME__', __NODE_CLASS__);
+/** @satisfies {EditorNodeCredentials<__NODE_CLASS__Credentials>} */
+export const credentials = {
+	username: { type: 'text' },
+	token: { type: 'password' }
+};
+
+export default (/** @type {NodeAPI} */ RED) => registerNode(RED, '__PREFIX__-__NODE_NAME__', __NODE_CLASS__, credentials);

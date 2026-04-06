@@ -3,7 +3,9 @@
 		"label": {
 			"name": "Name",
 			"host": "Host",
-			"port": "Port"
+			"port": "Port",
+			"username": "Username",
+			"token": "Token"
 		},
 		"placeholder": {
 			"name": "My Config"
