@@ -334,11 +334,12 @@ export default (RED) =>
     });
 ```
 
-#### `initClient(ClientClass, options)`
+#### `initClient(ClientClass, options, updateEvent?)`
 
-Создаёт `new ClientClass(options)`, сохраняет и возвращает.
-Если экземпляр генерирует событие `'auth'`, учётные данные
-автоматически сохраняются через `RED.nodes.addCredentials`.
+Создаёт `new ClientClass(options)`, сохраняет и возвращет.
+Если экземпляр генерирует событие, совпадающее с `updateEvent`
+(по умолчанию `'auth'`), учётные данные автоматически сохраняются
+через `RED.nodes.addCredentials`.
 
 #### `getClient()`
 

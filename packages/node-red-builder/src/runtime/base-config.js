@@ -60,15 +60,16 @@ export class BaseConfigNode {
 	 * @template TOpts
 	 * @param {new (options: TOpts) => TClient} ClientClass
 	 * @param {TOpts} options
+	 * @param {string} [updateEvent='auth']
 	 * @returns {TClient}
 	 */
-	initClient(ClientClass, options) {
+	initClient(ClientClass, options, updateEvent = 'auth') {
 		this.#client = new ClientClass(options);
 		const /** @type {any} */ client = this.#client;
 		if (typeof client?.on === 'function')
-			client.on('auth', (/** @type {any} */ creds) => {
-				this.RED.nodes.addCredentials(this.node.id, { ...this.node.credentials, creds });
-				this.node.debug('Credentials updated automatically');
+			client.on(updateEvent, (/** @type {any} */ creds) => {
+				this.RED.nodes.addCredentials(this.node.id, { ...this.node.credentials, ...creds });
+				this.node.warn(`[${this.config.type}] Credentials updated via '${updateEvent}' event. Deploy is required to save changes to disk.`);
 			});
 		return this.#client;
 	}

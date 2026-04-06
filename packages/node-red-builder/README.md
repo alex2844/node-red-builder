@@ -337,11 +337,12 @@ export default (RED) =>
     });
 ```
 
-#### `initClient(ClientClass, options)`
+#### `initClient(ClientClass, options, updateEvent?)`
 
 Creates `new ClientClass(options)`, stores it, returns it.
-If the instance emits an `'auth'` event, credentials are
-saved automatically via `RED.nodes.addCredentials`.
+If the instance emits an event matching `updateEvent`
+(default `'auth'`), credentials are saved automatically
+via `RED.nodes.addCredentials`.
 
 #### `getClient()`
 
