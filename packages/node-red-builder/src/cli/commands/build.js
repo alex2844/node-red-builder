@@ -84,7 +84,7 @@ export async function build(/** @type {import('../config.js').BuilderConfig} */ 
 			if (buildResult.success) {
 				const [artifact] = buildResult.outputs;
 				const content = await artifact.text();
-				finalHtmlParts.push(`<script type="text/javascript">\n${content}</script>`);
+				finalHtmlParts.push(`<script type="text/javascript">\n(function(){\n${content.trim()}\n})();\n</script>`);
 			} else
 				console.error(`❌ Build failed for ${nodeName}/ui.js:`, buildResult.logs);
 		}
@@ -97,7 +97,7 @@ export async function build(/** @type {import('../config.js').BuilderConfig} */ 
 
 		if (finalHtmlParts.length > 0) {
 			const htmlDest = path.join(nodeDistDir, `${nodeName}.html`);
-			await Bun.write(htmlDest, finalHtmlParts.join('\n\n'));
+			await Bun.write(htmlDest, finalHtmlParts.join('\n'));
 			console.log(`📦 Assembled ${nodeName}.html`);
 		}
 
