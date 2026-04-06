@@ -25,6 +25,11 @@ export class BaseConfigNode {
 		this.config = config;
 		this.namespace = config.type.split('-').slice(0, -1).join('-') || config.type;
 
+		if (this.onStart !== BaseConfigNode.prototype.onStart)
+			this.RED.events.once('flows:started', () => {
+				Promise.resolve(this.onStart()).catch(err => this.node.error(`Error in onStart: ${err.message}`));
+			});
+
 		this.node.on('close', (/** @type {boolean} */ removed, /** @type {() => void} */ done) => {
 			this.#internalClose(removed).finally(() => done());
 		});
@@ -80,7 +85,6 @@ export class BaseConfigNode {
 		if (typeof client?.removeAllListeners === 'function')
 			client.removeAllListeners();
 
-		// Remove all registered admin routes
 		const stack = this.RED.httpAdmin._router.stack;
 		this.routes.forEach(route => {
 			for (let i = stack.length - 1; i >= 0; i--) {
@@ -94,6 +98,11 @@ export class BaseConfigNode {
 			await this.onClose(removed);
 		this.#client = null;
 	}
+
+	/**
+	 * Override in subclass to run logic after all flows have fully started.
+	 */
+	async onStart() {}
 
 	/**
 	 * Override in subclass to run cleanup logic when the node is closed.

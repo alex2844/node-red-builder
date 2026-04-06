@@ -22,7 +22,6 @@ export class BaseNode {
 		this.node = node;
 		this.props = props;
 
-		// Resolve config node if this node references one
 		if (props.config) {
 			const configNode = /** @type {Node & { instance: TConfigNode }} */ (RED.nodes.getNode(props.config));
 			this.config = configNode?.instance;
@@ -31,13 +30,19 @@ export class BaseNode {
 				this.node.warn('Config node not found.');
 		}
 
-		// Only wire up the 'input' event if the subclass actually overrides onInput
+		if (this.onStart !== BaseNode.prototype.onStart)
+			this.RED.events.once('flows:started', () => {
+				Promise.resolve(this.onStart()).catch(err => {
+					this.node.error(`Error in onStart: ${err.message}`);
+					this.setStatus('Startup error', 'red', 'ring');
+				});
+			});
+
 		if (this.onInput !== BaseNode.prototype.onInput)
 			this.node.on('input', (msg, send, done) => {
 				this.#handleInput(done, () => this.onInput(msg, send));
 			});
 
-		// Wire up the 'close' event for cleanup
 		this.node.on('close', (/** @type {boolean} */ removed, /** @type {() => void} */ done) => {
 			this.clearStatus();
 			if (this.onClose !== BaseNode.prototype.onClose)
@@ -149,10 +154,15 @@ export class BaseNode {
 			await logic();
 			done();
 		} catch (/** @type {any} */ err) {
-			this.setStatus(err.message || 'Error', 'red', 'dot');
+			this.setStatus(err.message || 'Error', 'red', 'ring');
 			done(err);
 		}
 	}
+
+	/**
+	 * Override in subclass to run logic after all flows have fully started.
+	 */
+	async onStart() {}
 
 	/**
 	 * Override in subclass to handle incoming messages.

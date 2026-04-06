@@ -305,6 +305,7 @@ Clears the status badge immediately or after `delay` ms.
 
 | Method | Called when |
 |---|---|
+| `onStart()` | Flows have fully started (once) |
 | `onInput(msg, send)` | A message arrives |
 | `onClose(removed)` | Node closes or Node-RED restarts |
 
@@ -365,10 +366,12 @@ Express router automatically.
 Derived from `config.type` — everything before the last `-`.
 For example, `my-config` → `my`.
 
-#### Lifecycle hook
+#### Lifecycle hooks
 
-Override `onClose(removed)` for teardown. Client event
-listeners are removed automatically.
+| Method | Called when |
+|---|---|
+| `onStart()` | Flows have fully started (once) |
+| `onClose(removed)` | Node closes or Node-RED restarts |
 
 ---
 
