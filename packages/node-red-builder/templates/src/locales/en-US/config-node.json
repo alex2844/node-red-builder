@@ -8,7 +8,7 @@
 			"token": "Token"
 		},
 		"placeholder": {
-			"name": "My Config"
+			"token": "Enter your API key"
 		}
 	}
 }

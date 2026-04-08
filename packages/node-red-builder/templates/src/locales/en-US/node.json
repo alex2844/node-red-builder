@@ -6,9 +6,6 @@
 			"action": "Action",
 			"topic": "Topic"
 		},
-		"placeholder": {
-			"name": "My Node"
-		},
 		"action": {
 			"apply": "Apply Changes",
 			"restart": "Restart",
