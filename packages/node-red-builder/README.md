@@ -270,7 +270,7 @@ export default (RED) => registerNode(RED, 'my-node', MyNode);
 `client` throws if the config node or its client is
 unavailable.
 
-#### `getProp(key, msg)`
+#### `getProp(key, msg?)`
 
 Resolves `props[key]` using `props[keyType]` via
 `RED.util.evaluateNodeProperty`. Supports all standard
@@ -281,7 +281,7 @@ Node-RED typed input types (`str`, `num`, `bool`, `json`,
 const action = await this.getProp('action', msg);
 ```
 
-#### `getProps(keys, msg)`
+#### `getProps(keys, msg?)`
 
 Resolves multiple properties in parallel. Returns
 `Record<string, any>`.

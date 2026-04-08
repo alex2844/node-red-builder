@@ -267,7 +267,7 @@ export default (RED) => registerNode(RED, 'my-node', MyNode);
 `client` выбрасывает ошибку, если конфиг-нода или клиент
 недоступны.
 
-#### `getProp(key, msg)`
+#### `getProp(key, msg?)`
 
 Разрешает `props[key]` через `props[keyType]` используя
 `RED.util.evaluateNodeProperty`. Поддерживает все стандартные
@@ -278,7 +278,7 @@ export default (RED) => registerNode(RED, 'my-node', MyNode);
 const action = await this.getProp('action', msg);
 ```
 
-#### `getProps(keys, msg)`
+#### `getProps(keys, msg?)`
 
 Разрешает несколько свойств параллельно. Возвращает
 `Record<string, any>`.

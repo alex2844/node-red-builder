@@ -70,10 +70,10 @@ export class BaseNode {
 	 *
 	 * @template {string} K
 	 * @param {K[]} keys
-	 * @param {NodeMessage} msg
+	 * @param {NodeMessage} [msg]
 	 * @returns {Promise<{ [P in K]: any }>}
 	 */
-	async getProps(keys, msg) {
+	async getProps(keys, msg = {}) {
 		const results = await Promise.all(keys.map(key => this.getProp(key, msg)));
 		return /** @type {any} */ (Object.fromEntries(keys.map((key, i) => [key, results[i]])));
 	}
@@ -83,12 +83,14 @@ export class BaseNode {
 	 * The value and its type are looked up as `props[key]` and `props[keyType]`.
 	 *
 	 * @param {string} key
-	 * @param {NodeMessage} msg
+	 * @param {NodeMessage} [msg]
 	 * @returns {Promise<any>}
 	 */
-	async getProp(key, msg) {
+	async getProp(key, msg = {}) {
 		const value = this.props[key];
 		const type = this.props[`${key}Type`];
+		if (type === 'msg' && (!msg || Object.keys(msg).length === 0))
+			return;
 		return new Promise((resolve, reject) => {
 			if (type === 'jsonata')
 				this.RED.util.evaluateNodeProperty(value, type, this.node, msg, (err, result) => {
