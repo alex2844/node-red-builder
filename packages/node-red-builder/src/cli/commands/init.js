@@ -135,6 +135,7 @@ export async function init(/** @type {string|undefined} */ targetDir, withExampl
 				'target': 'ESNext',
 				'module': 'ESNext',
 				'moduleResolution': 'bundler',
+				"moduleDetection": "force",
 				'baseUrl': '.',
 				'checkJs': true,
 				'allowJs': true,

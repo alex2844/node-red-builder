@@ -3,6 +3,7 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+		"moduleDetection": "force",
 		"baseUrl": ".",
 		"paths": {
 			"node-red-builder": ["./packages/node-red-builder/src/runtime/index.js"],
